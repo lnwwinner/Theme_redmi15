@@ -1,0 +1,6 @@
+{
+  "name": "HyperTheme Maker",
+  "description": "App for creating custom themes for Xiaomi HyperOS with image generation and AI analysis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
