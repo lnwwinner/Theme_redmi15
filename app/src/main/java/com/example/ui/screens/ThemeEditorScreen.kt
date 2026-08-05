@@ -36,6 +36,9 @@ fun ThemeEditorScreen(viewModel: ThemeViewModel) {
     val themeState by viewModel.themeState.collectAsState()
     
     val categories = listOf(
+        CategoryItem("palette", "สร้างจานสี", Icons.Default.Palette),
+        CategoryItem("iconPack", "ปรับแต่งไอคอน", Icons.Default.FormatPaint),
+        CategoryItem("fonts", "แบบอักษร", Icons.Default.FontDownload),
         CategoryItem("lockStyle", "รูปแบบการล็อก", Icons.Default.Lock),
         CategoryItem("statusBar", "แถบสถานะ", Icons.Default.SignalCellular4Bar),
         CategoryItem("icons", "ไอคอน", Icons.Default.Apps),
@@ -52,7 +55,18 @@ fun ThemeEditorScreen(viewModel: ThemeViewModel) {
                     title = { Text("ปรับแต่งธีม", fontWeight = FontWeight.Bold) },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
-                    )
+                    ),
+                    actions = {
+                        val context = androidx.compose.ui.platform.LocalContext.current
+                        IconButton(onClick = {
+                            val uri = com.example.util.ExportManager.exportTheme(context, themeState)
+                            if (uri != null) {
+                                com.example.util.ExportManager.shareTheme(context, uri)
+                            }
+                        }) {
+                            Icon(Icons.Default.Share, contentDescription = "Export MTZ")
+                        }
+                    }
                 )
             },
             floatingActionButton = {
@@ -103,12 +117,19 @@ fun ThemeEditorScreen(viewModel: ThemeViewModel) {
             }
         }
     } else {
-        val cat = categories.find { it.id == selectedCategory }
-        CategorySelectionScreen(
-            title = cat?.title ?: "",
-            onBack = { selectedCategory = null },
-            onSelect = { viewModel.updateThemeCategory(cat!!.id, it) }
-        )
+        when (selectedCategory) {
+            "palette" -> PaletteGeneratorScreen(viewModel, onBack = { selectedCategory = null })
+            "iconPack" -> IconPackScreen(onBack = { selectedCategory = null })
+            "fonts" -> FontImporterScreen(onBack = { selectedCategory = null })
+            else -> {
+                val cat = categories.find { it.id == selectedCategory }
+                CategorySelectionScreen(
+                    title = cat?.title ?: "",
+                    onBack = { selectedCategory = null },
+                    onSelect = { viewModel.updateThemeCategory(cat!!.id, it) }
+                )
+            }
+        }
     }
 }
 

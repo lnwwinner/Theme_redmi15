@@ -113,6 +113,10 @@ class ThemeViewModel : ViewModel() {
         }
     }
 
+    fun clearAnalysisState() {
+        _analysisState.value = AnalysisState.Idle
+    }
+
     private fun Bitmap.toBase64(): String {
         val outputStream = ByteArrayOutputStream()
         compress(Bitmap.CompressFormat.JPEG, 80, outputStream)
