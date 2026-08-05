@@ -9,8 +9,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -36,7 +39,7 @@ fun ThemeEditorScreen(viewModel: ThemeViewModel) {
         CategoryItem("lockStyle", "รูปแบบการล็อก", Icons.Default.Lock),
         CategoryItem("statusBar", "แถบสถานะ", Icons.Default.SignalCellular4Bar),
         CategoryItem("icons", "ไอคอน", Icons.Default.Apps),
-        CategoryItem("messaging", "ข้อความ", Icons.Default.Message),
+        CategoryItem("messaging", "ข้อความ", Icons.AutoMirrored.Filled.Message),
         CategoryItem("dialer", "แป้นโทร", Icons.Default.Dialpad),
         CategoryItem("favorites", "ไอคอนที่ใช้บ่อย", Icons.Default.Home),
         CategoryItem("bootAnimation", "ภาพเคลื่อนไหวขณะเปิดเครื่อง", Icons.Default.Animation)
@@ -46,14 +49,23 @@ fun ThemeEditorScreen(viewModel: ThemeViewModel) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("ปรับแต่งธีม (Customize Theme)") }
+                    title = { Text("ปรับแต่งธีม", fontWeight = FontWeight.Bold) },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
+                    )
                 )
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = { /* Preview Theme */ }) {
+                FloatingActionButton(
+                    onClick = { /* Preview Theme */ },
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    shape = RoundedCornerShape(16.dp)
+                ) {
                     Icon(Icons.Default.Preview, contentDescription = "Preview")
                 }
-            }
+            },
+            containerColor = MaterialTheme.colorScheme.background
         ) { padding ->
             Column(modifier = Modifier.padding(padding)) {
                 // Generated wallpaper banner
@@ -66,9 +78,10 @@ fun ThemeEditorScreen(viewModel: ThemeViewModel) {
                             contentDescription = "Generated Wallpaper",
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(200.dp)
-                                .padding(16.dp)
-                                .clip(RoundedCornerShape(16.dp)),
+                                .height(220.dp)
+                                .padding(horizontal = 24.dp, vertical = 16.dp)
+                                .clip(RoundedCornerShape(32.dp))
+                                .border(4.dp, MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(32.dp)),
                             contentScale = ContentScale.Crop
                         )
                     }
@@ -76,7 +89,7 @@ fun ThemeEditorScreen(viewModel: ThemeViewModel) {
 
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(24.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
@@ -104,24 +117,38 @@ fun CategoryCard(item: CategoryItem, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(1.5f)
+            .aspectRatio(1.2f)
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Icon(
-                imageVector = item.icon,
-                contentDescription = item.title,
-                modifier = Modifier.size(32.dp),
-                tint = MaterialTheme.colorScheme.primary
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = item.icon,
+                    contentDescription = item.title,
+                    modifier = Modifier.size(28.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = item.title,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = item.title, fontSize = 14.sp, fontWeight = FontWeight.Medium)
         }
     }
 }
@@ -135,21 +162,25 @@ fun CategorySelectionScreen(title: String, onBack: () -> Unit, onSelect: (Int) -
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(title) },
+                title = { Text(title, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
+                )
             )
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(24.dp),
             modifier = Modifier.padding(padding),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             items(options.size) { index ->
                 Column(
@@ -162,24 +193,30 @@ fun CategorySelectionScreen(title: String, onBack: () -> Unit, onSelect: (Int) -
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .aspectRatio(0.5f)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(Color.LightGray)
+                            .aspectRatio(0.45f)
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
                             .border(
-                                width = if (selectedIndex == index) 3.dp else 0.dp,
+                                width = if (selectedIndex == index) 4.dp else 0.dp,
                                 color = if (selectedIndex == index) MaterialTheme.colorScheme.primary else Color.Transparent,
-                                shape = RoundedCornerShape(12.dp)
+                                shape = RoundedCornerShape(20.dp)
                             )
                     ) {
-                        // Placeholder for theme preview image
                         Icon(
                             Icons.Default.Image,
                             contentDescription = null,
-                            modifier = Modifier.align(Alignment.Center)
+                            modifier = Modifier.align(Alignment.Center).size(32.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = options[index], fontSize = 12.sp, maxLines = 1)
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = options[index],
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = if (selectedIndex == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
+                        maxLines = 1
+                    )
                 }
             }
         }

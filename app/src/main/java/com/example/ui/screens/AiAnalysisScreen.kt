@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.RoundedCornerShape
 import com.example.viewmodel.AnalysisState
 import com.example.viewmodel.ThemeViewModel
 import java.io.InputStream
@@ -36,19 +38,29 @@ fun AiAnalysisScreen(viewModel: ThemeViewModel) {
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Analyze Theme (Gemini)") })
-        }
+            TopAppBar(
+                title = { Text("วิเคราะห์ธีม", fontWeight = androidx.compose.ui.text.font.FontWeight.Bold) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
+                )
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(24.dp)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(onClick = { launcher.launch("image/*") }) {
+            Button(
+                onClick = { launcher.launch("image/*") },
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.fillMaxWidth().height(56.dp)
+            ) {
                 Icon(Icons.Default.Image, contentDescription = "Select Image")
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Select Theme Screenshot")
@@ -64,7 +76,8 @@ fun AiAnalysisScreen(viewModel: ThemeViewModel) {
                         contentDescription = "Selected Image",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(200.dp)
+                            .height(240.dp)
+                            .clip(RoundedCornerShape(24.dp))
                     )
 
                     OutlinedTextField(
@@ -72,13 +85,15 @@ fun AiAnalysisScreen(viewModel: ThemeViewModel) {
                         onValueChange = { prompt = it },
                         label = { Text("Analysis Prompt") },
                         modifier = Modifier.fillMaxWidth(),
-                        minLines = 3
+                        minLines = 3,
+                        shape = RoundedCornerShape(16.dp)
                     )
 
                     Button(
                         onClick = { viewModel.analyzeImage(bitmap, prompt) },
-                        modifier = Modifier.fillMaxWidth(),
-                        enabled = analysisState !is AnalysisState.Loading
+                        modifier = Modifier.fillMaxWidth().height(56.dp),
+                        enabled = analysisState !is AnalysisState.Loading,
+                        shape = RoundedCornerShape(16.dp)
                     ) {
                         if (analysisState is AnalysisState.Loading) {
                             CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
@@ -91,10 +106,16 @@ fun AiAnalysisScreen(viewModel: ThemeViewModel) {
 
             when (val state = analysisState) {
                 is AnalysisState.Success -> {
-                    Card(modifier = Modifier.fillMaxWidth()) {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    ) {
                         Text(
                             text = state.text,
-                            modifier = Modifier.padding(16.dp)
+                            modifier = Modifier.padding(24.dp),
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 }

@@ -8,6 +8,8 @@ import androidx.compose.material.icons.filled.ImageSearch
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -22,13 +24,16 @@ fun MainScreen(viewModel: ThemeViewModel) {
 
     Scaffold(
         bottomBar = {
-            NavigationBar {
+            NavigationBar(
+                containerColor = MaterialTheme.colorScheme.surface,
+                tonalElevation = 8.dp
+            ) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
 
                 NavigationBarItem(
                     icon = { Icon(Icons.Default.ColorLens, contentDescription = "Editor") },
-                    label = { Text("Editor") },
+                    label = { Text("ปรับแต่ง", fontWeight = FontWeight.SemiBold) },
                     selected = currentDestination?.hierarchy?.any { it.route == "editor" } == true,
                     onClick = {
                         navController.navigate("editor") {
@@ -36,11 +41,18 @@ fun MainScreen(viewModel: ThemeViewModel) {
                             launchSingleTop = true
                             restoreState = true
                         }
-                    }
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 )
                 NavigationBarItem(
                     icon = { Icon(Icons.Default.AutoAwesome, contentDescription = "Generate") },
-                    label = { Text("AI Gen") },
+                    label = { Text("สร้าง AI", fontWeight = FontWeight.SemiBold) },
                     selected = currentDestination?.hierarchy?.any { it.route == "generate" } == true,
                     onClick = {
                         navController.navigate("generate") {
@@ -48,11 +60,18 @@ fun MainScreen(viewModel: ThemeViewModel) {
                             launchSingleTop = true
                             restoreState = true
                         }
-                    }
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 )
                 NavigationBarItem(
                     icon = { Icon(Icons.Default.ImageSearch, contentDescription = "Analyze") },
-                    label = { Text("Analyze") },
+                    label = { Text("วิเคราะห์", fontWeight = FontWeight.SemiBold) },
                     selected = currentDestination?.hierarchy?.any { it.route == "analyze" } == true,
                     onClick = {
                         navController.navigate("analyze") {
@@ -60,7 +79,14 @@ fun MainScreen(viewModel: ThemeViewModel) {
                             launchSingleTop = true
                             restoreState = true
                         }
-                    }
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 )
             }
         }
