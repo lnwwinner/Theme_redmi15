@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.ColorLens
+import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.ImageSearch
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -31,6 +32,25 @@ fun MainScreen(viewModel: ThemeViewModel) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
 
+                NavigationBarItem(
+                    icon = { Icon(Icons.Default.Dashboard, contentDescription = "Gallery") },
+                    label = { Text("แม่แบบ", fontWeight = FontWeight.SemiBold) },
+                    selected = currentDestination?.hierarchy?.any { it.route == "gallery" } == true,
+                    onClick = {
+                        navController.navigate("gallery") {
+                            popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                )
                 NavigationBarItem(
                     icon = { Icon(Icons.Default.ColorLens, contentDescription = "Editor") },
                     label = { Text("ปรับแต่ง", fontWeight = FontWeight.SemiBold) },
@@ -93,9 +113,10 @@ fun MainScreen(viewModel: ThemeViewModel) {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "editor",
+            startDestination = "gallery",
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable("gallery") { GalleryScreen(viewModel) }
             composable("editor") { ThemeEditorScreen(viewModel) }
             composable("generate") { AiGenerationScreen(viewModel) }
             composable("analyze") { AiAnalysisScreen(viewModel) }

@@ -25,8 +25,10 @@ import androidx.compose.ui.unit.dp
 fun IconPackScreen(onBack: () -> Unit) {
     val colors = listOf(Color(0xFFEF4444), Color(0xFF10B981), Color(0xFF3B82F6), Color(0xFF9333EA), Color(0xFFEC4899), Color(0xFFFB923C))
     val icons = listOf(Icons.Default.Phone, Icons.Default.Message, Icons.Default.Camera, Icons.Default.Settings, Icons.Default.BrowserUpdated, Icons.Default.Map)
+    val iconPacks = listOf("HyperOS Classic", "Minimalist Outline", "Neon Cyber", "Pastel Soft", "Pixel Retro", "Monochrome")
     
     var selectedColor by remember { mutableStateOf(colors[3]) }
+    var selectedPack by remember { mutableStateOf(iconPacks[0]) }
 
     Scaffold(
         topBar = {
@@ -47,6 +49,20 @@ fun IconPackScreen(onBack: () -> Unit) {
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
+            Text("คลังไอคอนสำเร็จรูป (Icon Packs)", fontWeight = FontWeight.Bold)
+            androidx.compose.foundation.lazy.LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(iconPacks.size) { index ->
+                    FilterChip(
+                        selected = selectedPack == iconPacks[index],
+                        onClick = { selectedPack = iconPacks[index] },
+                        label = { Text(iconPacks[index], fontWeight = FontWeight.Medium) },
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                }
+            }
+
             Text("เลือกสีไอคอน", fontWeight = FontWeight.Bold)
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 colors.forEach { color ->

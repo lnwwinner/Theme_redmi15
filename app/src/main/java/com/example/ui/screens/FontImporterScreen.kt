@@ -18,8 +18,12 @@ import androidx.compose.ui.unit.sp
 fun FontImporterScreen(onBack: () -> Unit) {
     var selectedFontUri by remember { mutableStateOf<Uri?>(null) }
     
+    val presetFonts = listOf("MiSans (Default)", "Roboto", "Prompt", "Sarabun", "Kanit", "Chakra Petch")
+    var selectedPresetFont by remember { mutableStateOf(presetFonts[0]) }
+
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
         selectedFontUri = uri
+        selectedPresetFont = "" // Clear preset selection if user imports custom font
     }
 
     Scaffold(
@@ -41,6 +45,24 @@ fun FontImporterScreen(onBack: () -> Unit) {
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
+            Text("คลังฟอนต์สำเร็จรูป (Preset Fonts)", fontWeight = FontWeight.Bold)
+            androidx.compose.foundation.lazy.LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(presetFonts.size) { index ->
+                    FilterChip(
+                        selected = selectedPresetFont == presetFonts[index],
+                        onClick = {
+                            selectedPresetFont = presetFonts[index]
+                            selectedFontUri = null // Clear imported font if user selects preset
+                        },
+                        label = { Text(presetFonts[index], fontWeight = FontWeight.Medium) },
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
+                    )
+                }
+            }
+
+            Text("หรือนำเข้าฟอนต์ของคุณเอง", fontWeight = FontWeight.Bold)
             Button(
                 onClick = { launcher.launch("*/*") },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
@@ -50,7 +72,9 @@ fun FontImporterScreen(onBack: () -> Unit) {
             }
 
             if (selectedFontUri != null) {
-                Text("เลือกไฟล์: ${selectedFontUri?.lastPathSegment ?: "font.ttf"}", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Medium)
+                Text("ไฟล์ที่นำเข้า: ${selectedFontUri?.lastPathSegment ?: "font.ttf"}", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Medium)
+            } else if (selectedPresetFont.isNotEmpty()) {
+                Text("ฟอนต์ที่เลือก: $selectedPresetFont", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Medium)
             }
 
             Card(
